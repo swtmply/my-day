@@ -8,7 +8,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
 
   if (!session) redirect("/");
 
-  return <div>{children}</div>;
+  return <div className="p-6">{children}</div>;
 };
 
 export default HomeLayout;
