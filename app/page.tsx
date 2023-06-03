@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import SignInButton from "@/components/interactives/sign-in-button";
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
           <p className="font-shoble">Sign In</p>
           <div className="h-px flex-grow border-t-2 border-slate-900 " />
         </div>
-        <Button variant={"outline"}>Continue with Discord</Button>
+        <SignInButton />
       </div>
       <p>Copyright. All rights reserved 2023</p>
     </div>
