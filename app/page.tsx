@@ -1,6 +1,13 @@
 import SignInButton from "@/components/interactives/sign-in-button";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (session) redirect("/home");
+
   return (
     <div className="flex flex-col justify-between items-center min-h-screen py-12">
       <div className="flex flex-col gap-12 w-5/6 flex-grow justify-center">

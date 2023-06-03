@@ -41,8 +41,6 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  if (session) redirect("/home");
-
   return (
     <html lang="en" className={`${dmSans.className} ${shoble.variable}`}>
       <body className="bg-amber-50 text-slate-900">
