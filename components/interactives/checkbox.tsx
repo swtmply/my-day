@@ -1,4 +1,4 @@
-import { bulletColors } from "@/lib/bullet";
+import { logsColors } from "@/lib/logs";
 import { months } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 import React, { SVGProps } from "react";
@@ -67,9 +67,9 @@ export const CheckboxGrid = ({
         <Checkbox
           key={idx}
           color={
-            bulletColors[
-              isMonth ? "Month" : (tab as keyof typeof bulletColors)
-            ][idx]
+            logsColors[isMonth ? "Month" : (tab as keyof typeof logsColors)][
+              idx
+            ]
           }
         />
       ))}

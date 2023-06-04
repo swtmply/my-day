@@ -1,4 +1,5 @@
-import Bullets from "@/components/interactives/bullets";
+import Logs from "@/components/interactives/logs";
+import LogsFilterDialog from "@/components/interactives/logs-filter-dialog";
 import ProfileButton from "@/components/interactives/profile-button";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
@@ -16,11 +17,9 @@ const HomePage = () => {
           <p>Horizontal Grid</p>
         </div>
 
-        <Button className="flex-shrink" variant={"ghost"}>
-          <SlidersHorizontal className="aspect-square h-4" />
-        </Button>
+        <LogsFilterDialog />
       </div>
-      <Bullets />
+      <Logs />
     </div>
   );
 };

@@ -5,8 +5,6 @@ import { DM_Sans } from "next/font/google";
 import AuthContext from "@/components/context/auth-context";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
-
 export const shoble = localFont({
   src: [
     {

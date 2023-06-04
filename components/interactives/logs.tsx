@@ -5,9 +5,9 @@ import React, { useCallback, useMemo } from "react";
 import { CheckboxGrid } from "./checkbox";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { bulletTabs } from "@/lib/bullet";
+import { logsTabs } from "@/lib/logs";
 
-const Bullets = () => {
+const Logs = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -30,7 +30,7 @@ const Bullets = () => {
   return (
     <>
       {month
-        ? bulletTabs.map((tab) => (
+        ? logsTabs.map((tab) => (
             <div key={tab} className="flex flex-col gap-2">
               <p className="font-shoble text-xl">{tab}</p>
 
@@ -55,4 +55,4 @@ const Bullets = () => {
   );
 };
 
-export default Bullets;
+export default Logs;
