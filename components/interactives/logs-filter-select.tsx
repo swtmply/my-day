@@ -12,6 +12,7 @@ import {
 } from "../ui/select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import { currentYear } from "@/lib/dates";
 
 const LogsFilterSelect = () => {
   const router = useRouter();
@@ -36,7 +37,7 @@ const LogsFilterSelect = () => {
             Year
           </Label>
           <Select
-            defaultValue="2023"
+            defaultValue={searchParams.get("year") || currentYear.toString()}
             onValueChange={(value) => {
               router.push(pathname + "?" + createQueryString("year", value));
             }}
@@ -61,7 +62,7 @@ const LogsFilterSelect = () => {
             Overall Colors
           </Label>
           <Select
-            defaultValue="month"
+            defaultValue={searchParams.get("color") || "month"}
             onValueChange={(value) => {
               router.push(pathname + "?" + createQueryString("color", value));
             }}
@@ -87,7 +88,7 @@ const LogsFilterSelect = () => {
             Grid Type
           </Label>
           <Select
-            defaultValue="horizontal"
+            defaultValue={searchParams.get("grid") || "horizontal"}
             onValueChange={(value) => {
               router.push(pathname + "?" + createQueryString("grid", value));
             }}

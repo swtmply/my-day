@@ -1,11 +1,7 @@
-"use client";
-
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 import Image from "next/image";
 
-const ProfileButton = () => {
-  const { data: session } = useSession();
-
+const ProfileButton = ({ session }: { session: Session }) => {
   return (
     <div className="flex gap-3 items-center">
       <div className="aspect-square h-14 rounded-full relative">

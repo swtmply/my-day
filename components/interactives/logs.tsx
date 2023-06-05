@@ -1,32 +1,23 @@
 "use client";
 
 import { monthsWithDates } from "@/lib/dates";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { CheckboxGrid } from "./checkbox";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { logsTabs } from "@/lib/logs";
 
-const Logs = () => {
+const Logs = ({ month, days }: { month?: string; days?: number }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
-    (queryParams: Array<{ name: string; value: string }>) => {
+    (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-
-      queryParams.forEach((queryParam) => {
-        params.set(queryParam.name, queryParam.value);
-      });
+      params.set(name, value);
 
       return params.toString();
     },
-    [searchParams]
-  );
-
-  const month = useMemo(() => searchParams.get("month"), [searchParams]);
-  const daysInMonth = useMemo(
-    () => Number(searchParams.get("days")),
     [searchParams]
   );
 
@@ -37,15 +28,15 @@ const Logs = () => {
             <div key={tab} className="flex flex-col gap-2">
               <p className="font-shoble text-xl">{tab}</p>
 
-              <CheckboxGrid tab={tab} count={daysInMonth} />
+              <CheckboxGrid tab={tab} count={days!} />
             </div>
           ))
         : monthsWithDates.map((month, index) => (
             <Link
-              href={`${pathname}?${createQueryString([
-                { name: "month", value: month.name },
-                { name: "days", value: month.days.toString() },
-              ])}`}
+              href={`${pathname}/${month.name}?${createQueryString(
+                "days",
+                month.days.toString()
+              )}`}
               key={index}
               className="flex flex-col gap-2"
             >
