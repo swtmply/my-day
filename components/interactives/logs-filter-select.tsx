@@ -13,11 +13,20 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { currentYear } from "@/lib/dates";
+import { useLocalStorage } from "usehooks-ts";
+
+export interface Preference {
+  month?: string;
+  year?: string;
+  color?: string;
+  grid?: string;
+}
 
 const LogsFilterSelect = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [, setPreference] = useLocalStorage<Preference>("preference", {});
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -40,6 +49,8 @@ const LogsFilterSelect = () => {
             defaultValue={searchParams.get("year") || currentYear.toString()}
             onValueChange={(value) => {
               router.push(pathname + "?" + createQueryString("year", value));
+
+              setPreference((prev) => ({ ...prev, year: value }));
             }}
           >
             <SelectTrigger className="col-span-3" id="year">

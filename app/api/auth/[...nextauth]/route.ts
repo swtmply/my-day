@@ -1,7 +1,7 @@
 import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 declare module "next-auth" {
   /**
@@ -10,6 +10,8 @@ declare module "next-auth" {
   interface Session {
     user?: {
       id: string;
+      createdAt: Date;
+      preference: Prisma.JsonValue;
     } & DefaultSession["user"];
   }
 }
@@ -26,8 +28,12 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub as string;
+      const user = await prisma.user.findUnique({ where: { id: token.sub } });
+
+      if (session.user && user) {
+        session.user.id = user.id;
+        session.user.preference = user.preference;
+        session.user.createdAt = user.createdAt;
       }
 
       return session;

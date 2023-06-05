@@ -3,9 +3,12 @@
 import { useSearchParams } from "next/navigation";
 import LogsFilterDialog from "../interactives/logs-filter-dialog";
 import { currentYear } from "@/lib/dates";
+import { useLocalStorage } from "usehooks-ts";
 
 const LogFilters = () => {
   const searchParams = useSearchParams();
+  // TODO add user default preference
+  useLocalStorage("preference", {});
 
   return (
     <div className="flex gap-2 items-center">
