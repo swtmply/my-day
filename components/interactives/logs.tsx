@@ -12,9 +12,12 @@ const Logs = () => {
   const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (queryParams: Array<{ name: string; value: string }>) => {
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+
+      queryParams.forEach((queryParam) => {
+        params.set(queryParam.name, queryParam.value);
+      });
 
       return params.toString();
     },
@@ -39,10 +42,10 @@ const Logs = () => {
           ))
         : monthsWithDates.map((month, index) => (
             <Link
-              href={`${pathname}?${createQueryString(
-                "month",
-                month.name
-              )}&${createQueryString("days", month.days.toString())}`}
+              href={`${pathname}?${createQueryString([
+                { name: "month", value: month.name },
+                { name: "days", value: month.days.toString() },
+              ])}`}
               key={index}
               className="flex flex-col gap-2"
             >

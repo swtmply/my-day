@@ -10,12 +10,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import duration from "dayjs/plugin/duration";
-import dayjs from "dayjs";
-
-dayjs.extend(duration);
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 const LogsFilterSelect = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   return (
     <>
       <div className="grid gap-4 py-4">
@@ -23,7 +35,12 @@ const LogsFilterSelect = () => {
           <Label htmlFor="year" className="text-right">
             Year
           </Label>
-          <Select defaultValue="2023">
+          <Select
+            defaultValue="2023"
+            onValueChange={(value) => {
+              router.push(pathname + "?" + createQueryString("year", value));
+            }}
+          >
             <SelectTrigger className="col-span-3" id="year">
               <SelectValue placeholder="Select year" />
             </SelectTrigger>
@@ -43,7 +60,12 @@ const LogsFilterSelect = () => {
           <Label htmlFor="colors" className="text-right">
             Overall Colors
           </Label>
-          <Select defaultValue="month">
+          <Select
+            defaultValue="month"
+            onValueChange={(value) => {
+              router.push(pathname + "?" + createQueryString("color", value));
+            }}
+          >
             <SelectTrigger className="col-span-3" id="colors">
               <SelectValue placeholder="Select color" />
             </SelectTrigger>
@@ -64,7 +86,12 @@ const LogsFilterSelect = () => {
           <Label htmlFor="grid" className="text-right">
             Grid Type
           </Label>
-          <Select defaultValue="horizontal">
+          <Select
+            defaultValue="horizontal"
+            onValueChange={(value) => {
+              router.push(pathname + "?" + createQueryString("grid", value));
+            }}
+          >
             <SelectTrigger className="col-span-3" id="grid">
               <SelectValue placeholder="Select grid type" />
             </SelectTrigger>
