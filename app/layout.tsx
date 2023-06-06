@@ -5,6 +5,7 @@ import { DM_Sans } from "next/font/google";
 import AuthContext from "@/components/context/auth-context";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import QueryContext from "@/components/context/query-context";
 export const shoble = localFont({
   src: [
     {
@@ -42,7 +43,9 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${dmSans.className} ${shoble.variable}`}>
       <body className="bg-amber-50 text-slate-900">
-        <AuthContext session={session}>{children}</AuthContext>
+        <QueryContext>
+          <AuthContext session={session}>{children}</AuthContext>
+        </QueryContext>
       </body>
     </html>
   );

@@ -10,48 +10,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 import { currentYear } from "@/lib/dates";
 import { useLocalStorage } from "usehooks-ts";
+import { useMutation } from "@tanstack/react-query";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "../ui/button";
 
-export interface Preference {
-  month?: string;
-  year?: string;
-  color?: string;
-  grid?: string;
-}
+const preferenceSchema = z.object({
+  year: z.string().optional().default(currentYear.toString()),
+  color: z.string().optional().default("month"),
+  grid: z.string().optional().default("horizontal"),
+});
+
+export type PreferenceType = z.infer<typeof preferenceSchema>;
 
 const LogsFilterSelect = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [, setPreference] = useLocalStorage<Preference>("preference", {});
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
+  const [preference, setPreference] = useLocalStorage<PreferenceType>(
+    "preference",
+    {
+      year: currentYear.toString(),
+      grid: "horizontal",
+      color: "Month",
+    }
   );
+
+  const form = useForm<PreferenceType>({
+    resolver: zodResolver(preferenceSchema),
+    defaultValues: preference,
+  });
+
+  const { mutate } = useMutation(async (value: PreferenceType) => {
+    return await fetch("/api/user/preference/update", {
+      method: "PATCH",
+      body: JSON.stringify(value),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+
+  const submitLog = form.handleSubmit((values) => {
+    setPreference(values);
+
+    mutate(values);
+  });
 
   return (
     <>
-      <div className="grid gap-4 py-4">
+      <form onSubmit={submitLog} className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="year" className="text-right">
             Year
           </Label>
           <Select
-            defaultValue={searchParams.get("year") || currentYear.toString()}
+            defaultValue={preference.year}
             onValueChange={(value) => {
-              router.push(pathname + "?" + createQueryString("year", value));
-
               setPreference((prev) => ({ ...prev, year: value }));
+              form.setValue("year", value);
             }}
+            name="year"
           >
             <SelectTrigger className="col-span-3" id="year">
               <SelectValue placeholder="Select year" />
@@ -69,21 +88,23 @@ const LogsFilterSelect = () => {
           </Select>
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="colors" className="text-right">
+          <Label htmlFor="color" className="text-right">
             Overall Colors
           </Label>
           <Select
-            defaultValue={searchParams.get("color") || "month"}
+            defaultValue={preference.color}
             onValueChange={(value) => {
-              router.push(pathname + "?" + createQueryString("color", value));
+              setPreference((prev) => ({ ...prev, color: value }));
+              form.setValue("color", value);
             }}
+            name="color"
           >
-            <SelectTrigger className="col-span-3" id="colors">
+            <SelectTrigger className="col-span-3" id="color">
               <SelectValue placeholder="Select color" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="month">Month</SelectItem>
+                <SelectItem value="Month">Month</SelectItem>
 
                 {logsTabs.map((tab) => (
                   <SelectItem key={tab} value={tab}>
@@ -99,10 +120,12 @@ const LogsFilterSelect = () => {
             Grid Type
           </Label>
           <Select
-            defaultValue={searchParams.get("grid") || "horizontal"}
+            defaultValue={preference.grid}
             onValueChange={(value) => {
-              router.push(pathname + "?" + createQueryString("grid", value));
+              setPreference((prev) => ({ ...prev, grid: value }));
+              form.setValue("grid", value);
             }}
+            name="grid"
           >
             <SelectTrigger className="col-span-3" id="grid">
               <SelectValue placeholder="Select grid type" />
@@ -115,7 +138,8 @@ const LogsFilterSelect = () => {
             </SelectContent>
           </Select>
         </div>
-      </div>
+        <Button type="submit">Apply Changes</Button>
+      </form>
     </>
   );
 };
