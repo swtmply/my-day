@@ -6,8 +6,17 @@ import { CheckboxGrid } from "./checkbox";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { logsTabs } from "@/lib/logs";
+import { Log } from "@prisma/client";
 
-const Logs = ({ month, days }: { month?: string; days?: number }) => {
+const Logs = ({
+  month,
+  days,
+  logs,
+}: {
+  month?: string;
+  days?: number;
+  logs?: Log[];
+}) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -28,7 +37,7 @@ const Logs = ({ month, days }: { month?: string; days?: number }) => {
             <div key={tab} className="flex flex-col gap-2">
               <p className="font-shoble text-xl">{tab}</p>
 
-              <CheckboxGrid tab={tab} count={days!} />
+              <CheckboxGrid logs={logs} tab={tab} count={days!} />
             </div>
           ))
         : monthsWithDates.map((month, index) => (
