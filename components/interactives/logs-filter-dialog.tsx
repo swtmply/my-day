@@ -1,3 +1,5 @@
+"use client";
+
 import { SlidersHorizontal } from "lucide-react";
 import {
   Dialog,
@@ -7,10 +9,13 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import LogsFilterForm from "../forms/logs-filter-form";
+import { useState } from "react";
 
 const LogsFilterDialog = () => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
         <SlidersHorizontal className="aspect-square h-4" />
       </DialogTrigger>
@@ -18,7 +23,7 @@ const LogsFilterDialog = () => {
         <DialogHeader>
           <DialogTitle>Logs Filter</DialogTitle>
         </DialogHeader>
-        <LogsFilterForm />
+        <LogsFilterForm setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );

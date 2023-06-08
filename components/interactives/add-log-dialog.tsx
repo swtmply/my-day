@@ -23,7 +23,7 @@ const AddLogDialog = () => {
         <DialogHeader>
           <DialogTitle>Create Log</DialogTitle>
         </DialogHeader>
-        <CreateLogForm setOpen={() => setOpen(false)} />
+        <CreateLogForm setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );

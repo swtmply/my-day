@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Logs from "@/components/interactives/logs";
+import LogsList from "@/components/interactives/logs-list";
 import { currentYear, months } from "@/lib/dates";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
@@ -28,7 +28,7 @@ const MonthPage = async ({
 
   return (
     <div className="flex flex-col gap-6">
-      <Logs
+      <LogsList
         logs={monthLogs}
         month={params.month}
         days={Number(searchParams.days)}

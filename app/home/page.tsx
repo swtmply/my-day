@@ -1,9 +1,9 @@
-import Logs from "@/components/interactives/logs";
+import LogsList from "@/components/interactives/logs-list";
 
 const HomePage = () => {
   return (
     <div className="flex flex-col gap-6">
-      <Logs />
+      <LogsList />
     </div>
   );
 };
