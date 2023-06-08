@@ -1,0 +1,29 @@
+import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { currentYear, months } from "@/lib/dates";
+import { NextResponse } from "next/server";
+
+export const GET = async (
+  request: Request,
+  { params }: { params: { month: string } }
+) => {
+  const session = await getServerSession(authOptions);
+
+  if (!session) return new Response("Unathorized request", { status: 401 });
+
+  const start = new Date(currentYear, months.indexOf(params.month), 1);
+  const end = new Date(currentYear, months.indexOf(params.month) + 1, 0);
+
+  const logs = await prisma.log.findMany({
+    where: {
+      userId: session.user?.id,
+      date: {
+        lte: new Date(end),
+        gte: new Date(start),
+      },
+    },
+  });
+
+  return NextResponse.json({ logs });
+};

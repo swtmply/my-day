@@ -2,11 +2,12 @@
 
 import { monthsWithDates } from "@/lib/dates";
 import React, { useCallback } from "react";
-import { CheckboxGrid } from "./checkbox";
+import { CheckboxGrid } from "./checkbox-grid";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { logsTabs } from "@/lib/logs";
+import { logTabs } from "@/lib/logs";
 import { Log } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 
 const Logs = ({
   month,
@@ -30,14 +31,29 @@ const Logs = ({
     [searchParams]
   );
 
+  const { data } = useQuery<Log[]>({
+    queryKey: month ? ["logs", month] : ["year-logs"],
+    queryFn: async () => {
+      const data = await fetch(`/api/logs/${month}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((res) => res.json());
+
+      if (data) return data.logs;
+    },
+    initialData: logs,
+  });
+
   return (
     <>
       {month
-        ? logsTabs.map((tab) => (
+        ? logTabs.map((tab) => (
             <div key={tab} className="flex flex-col gap-2">
               <p className="font-shoble text-xl">{tab}</p>
 
-              <CheckboxGrid logs={logs} tab={tab} count={days!} />
+              <CheckboxGrid logs={data} tab={tab} count={days!} />
             </div>
           ))
         : monthsWithDates.map((month, index) => (
@@ -51,7 +67,7 @@ const Logs = ({
             >
               <p className="font-shoble text-xl">{month.name}</p>
 
-              <CheckboxGrid tab={month.name} count={month.days} />
+              <CheckboxGrid tab={"Month"} count={month.days} />
             </Link>
           ))}
     </>

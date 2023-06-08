@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import LogsFilterSelect from "./logs-filter-select";
+import LogsFilterForm from "../forms/logs-filter-form";
 
 const LogsFilterDialog = () => {
   return (
@@ -18,7 +18,7 @@ const LogsFilterDialog = () => {
         <DialogHeader>
           <DialogTitle>Logs Filter</DialogTitle>
         </DialogHeader>
-        <LogsFilterSelect />
+        <LogsFilterForm />
       </DialogContent>
     </Dialog>
   );

@@ -2,7 +2,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Logs from "@/components/interactives/logs";
 import { currentYear, months } from "@/lib/dates";
 import { prisma } from "@/lib/db";
-import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
 
 const MonthPage = async ({
@@ -14,9 +13,8 @@ const MonthPage = async ({
 }) => {
   const session = await getServerSession(authOptions);
 
-  const month = `${currentYear}-${months.indexOf(params.month) + 1}-01`;
-  const start = dayjs(month).startOf("month").format("YYYY-MM-DD");
-  const end = dayjs(month).endOf("month").format("YYYY-MM-DD");
+  const start = new Date(currentYear, months.indexOf(params.month), 1);
+  const end = new Date(currentYear, months.indexOf(params.month) + 1, 0);
 
   const monthLogs = await prisma.log.findMany({
     where: {

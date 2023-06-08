@@ -3,7 +3,9 @@
 import LogsFilterDialog from "../interactives/logs-filter-dialog";
 import { useLocalStorage } from "usehooks-ts";
 import { Preference } from "@prisma/client";
-import { PreferenceType } from "../interactives/logs-filter-select";
+import { PreferenceType } from "../forms/logs-filter-form";
+import { useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 
 const LogFilters = ({
   preference,
@@ -14,6 +16,9 @@ const LogFilters = ({
     "preference",
     preference
   );
+  const searchParams = useSearchParams();
+
+  const month = searchParams.get("days");
 
   return (
     <div className="flex gap-2 items-center">
@@ -21,7 +26,7 @@ const LogFilters = ({
 
       <div className="font-shoble flex gap-4 flex-grow justify-center">
         <p>Year {storagePreference.year},</p>
-        <p>{storagePreference.color} Colors,</p>
+        {!month && <p>{storagePreference.color} Colors,</p>}
         <p>{storagePreference.grid} Grid</p>
       </div>
 

@@ -1,6 +1,12 @@
-export const logsTabs = ["Day", "Health", "Spending", "Weather", "Dream"];
+export const logTabs = [
+  "Day",
+  "Health",
+  "Spending",
+  "Weather",
+  "Dream",
+] as const;
 
-export const logsColors = {
+export const logColors = {
   Month: ["indigo-500", "indigo-600", "indigo-700", "indigo-800", "indigo-900"],
   Day: ["green-500", "emerald-600", "teal-700", "cyan-800", "sky-900"],
   Health: ["red-500", "red-600", "red-700", "red-800", "red-900"],
@@ -19,4 +25,18 @@ export const logsColors = {
     "fuchsia-800",
     "fuchsia-900",
   ],
+};
+
+export const logDescriptions = {
+  Day: ["Very Good", "Good", "Neutral", "Bad", "Very Bad"],
+  Health: ["Healthy", "Good", "Neutral", "Sick", "Bed Ridden"],
+  Spending: [
+    "Nothing",
+    "Less than Budget",
+    "Aligned with Budget",
+    "Over than Budget",
+    "A Lot",
+  ],
+  Weather: ["Hot", "Humid", "Mild", "Gloomy", "Rainy"],
+  Dream: ["Happy", "Funny", "Scary", "Sad", "Don't Remember"],
 };

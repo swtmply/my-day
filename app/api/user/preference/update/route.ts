@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { PreferenceType } from "@/components/interactives/logs-filter-select";
+import { PreferenceType } from "@/components/forms/logs-filter-form";
 
 export const PATCH = async (request: Request) => {
   const session = await getServerSession(authOptions);

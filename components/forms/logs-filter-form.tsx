@@ -1,6 +1,6 @@
 "use client";
 
-import { logsTabs } from "@/lib/logs";
+import { logTabs } from "@/lib/logs";
 import { Label } from "../ui/label";
 import {
   Select,
@@ -17,6 +17,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
+import { useSearchParams } from "next/navigation";
 
 const preferenceSchema = z.object({
   year: z.string().optional().default(currentYear.toString()),
@@ -35,6 +36,9 @@ const LogsFilterSelect = () => {
       color: "Month",
     }
   );
+  const searchParams = useSearchParams();
+
+  const month = searchParams.get("days");
 
   const form = useForm<PreferenceType>({
     resolver: zodResolver(preferenceSchema),
@@ -87,34 +91,36 @@ const LogsFilterSelect = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="color" className="text-right">
-            Overall Colors
-          </Label>
-          <Select
-            defaultValue={preference.color}
-            onValueChange={(value) => {
-              setPreference((prev) => ({ ...prev, color: value }));
-              form.setValue("color", value);
-            }}
-            name="color"
-          >
-            <SelectTrigger className="col-span-3" id="color">
-              <SelectValue placeholder="Select color" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="Month">Month</SelectItem>
+        {!month && (
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="color" className="text-right">
+              Overall Colors
+            </Label>
+            <Select
+              defaultValue={preference.color}
+              onValueChange={(value) => {
+                setPreference((prev) => ({ ...prev, color: value }));
+                form.setValue("color", value);
+              }}
+              name="color"
+            >
+              <SelectTrigger className="col-span-3" id="color">
+                <SelectValue placeholder="Select color" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="Month">Month</SelectItem>
 
-                {logsTabs.map((tab) => (
-                  <SelectItem key={tab} value={tab}>
-                    {tab}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+                  {logTabs.map((tab) => (
+                    <SelectItem key={tab} value={tab}>
+                      {tab}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="grid" className="text-right">
             Grid Type

@@ -1,4 +1,4 @@
-import { logsColors } from "@/lib/logs";
+import { logColors, logTabs } from "@/lib/logs";
 import { months } from "@/lib/dates";
 import { CheckboxMarkSVG, CheckboxSVG } from "../ui/grid-checkbox-svg";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,7 @@ export const CheckboxGrid = ({
   logs,
 }: {
   count: number;
-  tab: string;
+  tab: (typeof logTabs)[number] | "Month";
   logs?: Log[];
 }) => {
   const isMonth = months.find((m) => m === tab);
@@ -34,14 +34,15 @@ export const CheckboxGrid = ({
           return dayjs(log.date).date() === idx + 1 && log.type === tab;
         });
 
+        if (log) {
+          const color = logColors[tab][log.point];
+          return <Checkbox key={tab + idx} color={color} />;
+        }
+
         return (
           <Checkbox
             key={tab + idx}
-            color={
-              logsColors[isMonth ? "Month" : (tab as keyof typeof logsColors)][
-                log?.point || -1
-              ]
-            }
+            color={logColors[isMonth ? "Month" : tab][-1]}
           />
         );
       })}
