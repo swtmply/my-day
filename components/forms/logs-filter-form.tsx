@@ -17,7 +17,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const preferenceSchema = z.object({
   year: z.string().optional().default(currentYear.toString()),
@@ -41,10 +41,8 @@ const LogsFilterSelect = ({
     }
   );
   const searchParams = useSearchParams();
-  const params = useParams();
 
   const days = searchParams.get("days");
-  const month = params.month;
 
   const form = useForm<PreferenceType>({
     resolver: zodResolver(preferenceSchema),
@@ -132,7 +130,7 @@ const LogsFilterSelect = ({
             </Select>
           </div>
         )}
-        <div className="grid grid-cols-4 items-center gap-4">
+        {/* <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="grid" className="text-right">
             Grid Type
           </Label>
@@ -153,7 +151,7 @@ const LogsFilterSelect = ({
               </SelectGroup>
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
         <Button type="submit">Apply Changes</Button>
       </form>
     </>
