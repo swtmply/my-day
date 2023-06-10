@@ -52,11 +52,15 @@ const LogsList = ({
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
+      {/* VERTICAL justify-between flex-row */}
       {month
         ? logTabs.map((tab) => (
-            <div key={tab} className="flex flex-col gap-2">
-              <p className="font-shoble text-xl">{tab}</p>
+            <div
+              key={tab}
+              className="flex flex-col gap-2" // VERTICAL flex-col items-center w-[65px]
+            >
+              <p className="font-shoble  truncate text-xl">{tab}</p>
 
               <CheckboxGrid logs={data} tab={tab} count={days!} />
             </div>
@@ -75,7 +79,7 @@ const LogsList = ({
               <CheckboxGrid tab={"Month"} count={month.days} />
             </Link>
           ))}
-    </>
+    </div>
   );
 };
 

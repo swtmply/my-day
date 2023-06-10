@@ -27,13 +27,11 @@ const MonthPage = async ({
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <LogsList
-        logs={monthLogs}
-        month={params.month}
-        days={Number(searchParams.days)}
-      />
-    </div>
+    <LogsList
+      logs={monthLogs}
+      month={params.month}
+      days={Number(searchParams.days)}
+    />
   );
 };
 
