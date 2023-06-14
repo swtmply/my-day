@@ -1,28 +1,38 @@
 "use client";
 
-import { currentYear, monthsWithDates } from "@/lib/dates";
-import React, { useCallback, useEffect } from "react";
+import { currentYear, months, monthsWithDates } from "@/lib/dates";
+import React, { useCallback } from "react";
 import { CheckboxGrid } from "./checkbox-grid";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { logTabs } from "@/lib/logs";
-import { Log } from "@prisma/client";
+import { Log, Preference } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { useReadLocalStorage } from "usehooks-ts";
+import { useLocalStorage } from "usehooks-ts";
 import { PreferenceType } from "../forms/logs-filter-form";
+import dayjs from "dayjs";
 
 const LogsList = ({
   month,
   days,
   logs,
+  preference,
 }: {
   month?: string;
   days?: number;
   logs?: Log[];
+  preference?: Preference | PreferenceType;
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const preference = useReadLocalStorage<PreferenceType>("preference");
+  const [storagePreference] = useLocalStorage<PreferenceType>(
+    "preference",
+    preference || {
+      year: currentYear.toString(),
+      color: "Day",
+      grid: "horizontal",
+    }
+  );
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -34,21 +44,34 @@ const LogsList = ({
     [searchParams]
   );
 
-  const year = preference?.year || currentYear;
+  const year = storagePreference.year || currentYear;
 
   const { data } = useQuery<Log[]>({
-    queryKey: month ? ["logs", month, year] : ["year-logs"],
+    queryKey: month ? ["logs", month, year] : ["year-logs", year],
     queryFn: async () => {
-      const data = await fetch(`/api/logs/${month}?year=${year}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => res.json());
+      if (month) {
+        const data = await fetch(`/api/logs/${year}/${month}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => res.json());
 
-      if (data) return data.logs;
+        if (data) return data;
+      } else {
+        const data = await fetch(`api/logs/${year}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => res.json());
+
+        if (data) return data;
+      }
     },
     initialData: logs,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   return (
@@ -65,20 +88,30 @@ const LogsList = ({
               <CheckboxGrid logs={data} tab={tab} count={days!} />
             </div>
           ))
-        : monthsWithDates.map((month, index) => (
-            <Link
-              href={`${pathname}/${month.name}?${createQueryString(
-                "days",
-                month.days.toString()
-              )}`}
-              key={index}
-              className="flex flex-col gap-2"
-            >
-              <p className="font-shoble text-xl">{month.name}</p>
+        : monthsWithDates.map((month, index) => {
+            const monthData = data?.filter((log) => {
+              return months[dayjs(log.date).month()] === month.name;
+            });
 
-              <CheckboxGrid tab={"Month"} count={month.days} />
-            </Link>
-          ))}
+            return (
+              <Link
+                href={`${pathname}/${month.name}?${createQueryString(
+                  "days",
+                  month.days.toString()
+                )}`}
+                key={index}
+                className="flex flex-col gap-2"
+              >
+                <p className="font-shoble text-xl">{month.name}</p>
+
+                <CheckboxGrid
+                  tab={storagePreference.color as (typeof logTabs)[number]}
+                  logs={monthData}
+                  count={month.days}
+                />
+              </Link>
+            );
+          })}
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import { logColors, logTabs } from "@/lib/logs";
-import { months } from "@/lib/dates";
 import { CheckboxMarkSVG, CheckboxSVG } from "../ui/grid-checkbox-svg";
 import { cn } from "@/lib/utils";
 import { Log } from "@prisma/client";
@@ -30,11 +29,9 @@ export const CheckboxGrid = ({
   logs,
 }: {
   count: number;
-  tab: (typeof logTabs)[number] | "Month";
+  tab: (typeof logTabs)[number];
   logs?: Log[];
 }) => {
-  const isMonth = months.find((m) => m === tab);
-
   return (
     <div className="flex flex-wrap gap-2">
       {/* VERTICAL flex-col */}
@@ -49,11 +46,7 @@ export const CheckboxGrid = ({
         }
 
         return (
-          <Checkbox
-            key={tab + idx}
-            color={logColors[isMonth ? "Month" : tab][-1]}
-            day={idx + 1}
-          />
+          <Checkbox key={tab + idx} color={logColors[tab][-1]} day={idx + 1} />
         );
       })}
     </div>

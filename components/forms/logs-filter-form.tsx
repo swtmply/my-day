@@ -12,7 +12,7 @@ import {
 } from "../ui/select";
 import { currentYear } from "@/lib/dates";
 import { useLocalStorage } from "usehooks-ts";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,10 +37,11 @@ const LogsFilterSelect = ({
     {
       year: currentYear.toString(),
       grid: "horizontal",
-      color: "Month",
+      color: "Day",
     }
   );
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   const days = searchParams.get("days");
 
@@ -60,15 +61,18 @@ const LogsFilterSelect = ({
       });
     },
     {
-      onSuccess: () => {
+      onSuccess: (_, values) => {
+        if (preference.year !== values.year) {
+          // queryClient.invalidateQueries(["year-logs", preference.year]);
+        }
+
+        setPreference(values);
         setOpen(false);
       },
     }
   );
 
   const submitLog = form.handleSubmit((values) => {
-    setPreference(values);
-
     mutate(values);
   });
 
@@ -118,8 +122,6 @@ const LogsFilterSelect = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="Month">Month</SelectItem>
-
                   {logTabs.map((tab) => (
                     <SelectItem key={tab} value={tab}>
                       {tab}

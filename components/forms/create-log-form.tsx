@@ -71,6 +71,7 @@ const CreateLogForm = ({
     {
       onSuccess() {
         queryClient.invalidateQueries(["logs", month]);
+        queryClient.invalidateQueries(["year-logs", dayjs(date).year()]);
 
         setOpen(false);
       },

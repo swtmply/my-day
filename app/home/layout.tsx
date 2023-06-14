@@ -31,7 +31,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
           preference={
             user?.preference || {
               year: currentYear.toString(),
-              color: "Month",
+              color: "Day",
               grid: "horizontal",
             }
           }

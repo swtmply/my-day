@@ -6,14 +6,13 @@ import { NextResponse } from "next/server";
 
 export const GET = async (
   request: Request,
-  { params }: { params: { month: string } }
+  { params }: { params: { month: string; year: string } }
 ) => {
   const session = await getServerSession(authOptions);
-  const { searchParams } = new URL(request.url);
 
   if (!session) return new Response("Unathorized request", { status: 401 });
 
-  const year = Number(searchParams.get("year"));
+  const year = Number(params.year);
 
   const start = new Date(year, months.indexOf(params.month), 1);
   const end = new Date(year, months.indexOf(params.month) + 1, 0);
@@ -28,5 +27,5 @@ export const GET = async (
     },
   });
 
-  return NextResponse.json({ logs });
+  return NextResponse.json(logs);
 };
